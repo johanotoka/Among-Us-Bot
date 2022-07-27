@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 
-players = [153518379565711361]
+players = []
 started = False
 
 CREW_CHANNEL = 'crewmate'
 IMPOSTER_CHANNEL = 'imposter'
 MEETING_CHANNEL = 'meeting'
-LOBBY_CHANNEL = 'lobby'
+LOBBY_CHANNEL = 'lobby (join to play)'
 
 class Game(commands.Cog):
     
@@ -26,9 +26,7 @@ class Game(commands.Cog):
         }
         imposter_channel = await ctx.guild.create_text_channel(IMPOSTER_CHANNEL,overwrites=overwrites)
 
-        voice_channel = await ctx.guild.create_voice_channel(MEETING_CHANNEL)
-
-        lobby_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL)
+        voice_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL, user_limit = 20)
  
         
     @commands.command()
@@ -39,19 +37,27 @@ class Game(commands.Cog):
         ic = discord.utils.get(ctx.guild.channels, name = IMPOSTER_CHANNEL)
         await ic.delete()
         mc = discord.utils.get(ctx.guild.channels, name = MEETING_CHANNEL)
-        await mc.delete()
+        if mc:
+            for member in mc.members:
+                await member.edit(mute=False)
+            await mc.delete()
         lc = discord.utils.get(ctx.guild.channels, name = LOBBY_CHANNEL)
-        await lc.delete()
+        if lc:
+            await lc.delete()
 
         started = False
         #players = []
 
     @commands.command()
     async def game_start(self, ctx):
-        meet_ch = discord.utils.get(ctx.guild.channels, name = MEETING_CHANNEL)
-        for pl in players:
-            memb = await ctx.guild.fetch_member(pl)
-            await memb.move_to(meet_ch)
+        # Rename the lobby to meeting, and mute all players
+        meet_ch = discord.utils.get(ctx.guild.channels, name = LOBBY_CHANNEL)
+        await meet_ch.edit(name = MEETING_CHANNEL)
+        for member in meet_ch.members:
+            await member.edit(mute=True)
+            players.append(member.id)
+
+        #TODO: Assign roles to each player
 
     @commands.command()
     async def lmin(self,ctx):
