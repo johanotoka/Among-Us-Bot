@@ -20,16 +20,19 @@ class Game(commands.Cog):
         started = True
         crewmate_channel = await ctx.guild.create_text_channel(CREW_CHANNEL)
 
+        imposter_role = discord.utils.get(ctx.guild.roles, name=IMPOSTER_CHANNEL)
+
         overwrites = {
             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-            ctx.guild.me: discord.PermissionOverwrite(read_messages=True)
+            imposter_role: discord.PermissionOverwrite(read_messages=True),
         }
+        
         imposter_channel = await ctx.guild.create_text_channel(IMPOSTER_CHANNEL,overwrites=overwrites)
 
         voice_channel = await ctx.guild.create_voice_channel(MEETING_CHANNEL)
 
         lobby_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL)
- 
+
         
     @commands.command()
     async def game_cleanup(self, ctx):
