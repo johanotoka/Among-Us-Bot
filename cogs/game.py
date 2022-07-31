@@ -1,3 +1,5 @@
+from distutils.command.install_data import install_data
+
 import discord
 from discord.ext import commands
 
@@ -5,6 +7,8 @@ players = []
 started = False
 
 CREW_CHANNEL = 'crewmate'
+CREW_MATE_ID = 994696028085297212
+IMPOSTER_ID = 994696128954110054
 IMPOSTER_CHANNEL = 'imposter'
 MEETING_CHANNEL = 'meeting'
 LOBBY_CHANNEL = 'lobby (join to play)'
@@ -20,7 +24,7 @@ class Game(commands.Cog):
         started = True
         crewmate_channel = await ctx.guild.create_text_channel(CREW_CHANNEL)
 
-        imposter_role = discord.utils.get(ctx.guild.roles, name=IMPOSTER_CHANNEL)
+        imposter_role = discord.utils.get(ctx.guild.roles, id=IMPOSTER_ID)
 
         overwrites = {
             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
