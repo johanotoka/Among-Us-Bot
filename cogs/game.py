@@ -1,5 +1,3 @@
-from distutils.command.install_data import install_data
-
 import discord
 from discord.ext import commands
 
