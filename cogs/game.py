@@ -71,7 +71,7 @@ class Game(commands.Cog):
         for imposter in imposter_members_list:
             await imposter.remove_roles(imposter_role)
         
-        #remove all imposter roles from the crewmate member list.
+        #remove all crewmate roles from the crewmate member list.
         for crewmate in crewmate_members_list:
             await crewmate.remove_roles(crewmate_role)
 
@@ -99,9 +99,10 @@ class Game(commands.Cog):
             all_members_list.append(member)
             total_players = total_players + 1
 
+        #if the number of imposters specified is greater than total number of players then the bot will complain.
         if(number_of_imposters > total_players):
             await ctx.send(f'There are {total_players} total number of players and {number_of_imposters} number of imposters. Am I a joke to you ?')
-            
+
         elif(number_of_imposters <= total_players):
             #the "all_members_list" now contains a sequence of non-repeating pseudorandom members.
             random.shuffle(all_members_list)
