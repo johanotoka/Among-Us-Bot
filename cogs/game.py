@@ -8,6 +8,7 @@ IMPOSTER_ID = 994696128954110054
 IMPOSTER_CHANNEL = 'imposter'
 MEETING_CHANNEL = 'meeting'
 LOBBY_CHANNEL = 'lobby (join to play)'
+BOT_COMMAND_CHANNEL = 'bot-commands'
 
 COMMON_TASK_VALUE = 5
 SHORT_TASK_VALUE = 3
@@ -46,26 +47,24 @@ class Game(commands.Cog):
 
         imposter_channel = await ctx.guild.create_text_channel(IMPOSTER_CHANNEL, overwrites=overwrites)
 
-        voice_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL, user_limit=20)
+        voice_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL, user_limit=21)
+        await voice_channel.connect()
 
     @commands.command()
     async def game_cleanup(self, ctx):
         # TODO: Move these into a generalized helper method
         imposter_role = ctx.guild.get_role(IMPOSTER_ID)
         crewmate_role = ctx.guild.get_role(CREW_MATE_ID)
-
-        cc = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
-        await cc.delete()
-        ic = discord.utils.get(ctx.guild.channels, name=IMPOSTER_CHANNEL)
-        await ic.delete()
+        
         mc = discord.utils.get(ctx.guild.channels, name=MEETING_CHANNEL)
         if mc:
             for member in mc.members:
                 await member.edit(mute=False)
             await mc.delete()
-        lc = discord.utils.get(ctx.guild.channels, name=LOBBY_CHANNEL)
-        if lc:
-            await lc.delete()
+
+        await self.delete_channel(ctx, CREW_CHANNEL)
+        await self.delete_channel(ctx, IMPOSTER_CHANNEL)
+        await self.delete_channel(ctx, LOBBY_CHANNEL)
 
         #remove all imposter roles from the imposter member list.
         for imposter in imposter_members_list:
@@ -76,7 +75,12 @@ class Game(commands.Cog):
             await crewmate.remove_roles(crewmate_role)
 
         started = False
-        # players = []
+        players.clear()
+
+    async def delete_channel(self, ctx, channel):
+        ch = discord.utils.get(ctx.guild.channels, name=channel)
+        if ch:
+            await ch.delete()
 
     @commands.command()
     async def game_start(self, ctx):
@@ -84,8 +88,11 @@ class Game(commands.Cog):
         meet_ch = discord.utils.get(ctx.guild.channels, name=LOBBY_CHANNEL)
         await meet_ch.edit(name=MEETING_CHANNEL)
         for member in meet_ch.members:
-            await member.edit(mute=True)
-            players.append(member.id)
+            if (not member.bot):
+                await member.edit(mute=True)
+                players.append(member.id)
+
+        await self.play_sound(ctx, "audio/among_us_start.mp3")
 
         # Assigned roles to each player
         imposter_role = ctx.guild.get_role(IMPOSTER_ID)
@@ -153,6 +160,29 @@ class Game(commands.Cog):
         print(number_of_common_tasks)
         print(number_of_short_tasks)
         print(number_of_long_tasks)
+
+    #audio testing commands
+    @commands.command()
+    async def play_kill(self, ctx):
+        await self.play_sound(ctx, "audio/among_us_kill.mp3")
+
+    @commands.command()
+    async def play_start(self, ctx):
+        await self.play_sound(ctx, "audio/among_us_start.mp3")
+
+    @commands.command()
+    async def play_meeting(self, ctx):
+        await self.play_sound(ctx, "audio/among_us_meeting.mp3")
+
+    #used to call the sound we want to play    
+    async def play_sound(self, ctx, sound):
+        vc = ctx.guild.voice_client
+        if vc:
+            vc.stop()
+            vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source=sound))
+        else:
+            await ctx.send("Not in a voice channel. Initialize a game first!")
+
 
 
 def setup(bot):
