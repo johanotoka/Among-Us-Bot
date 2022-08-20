@@ -58,5 +58,5 @@ class Bob(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Bob(bot))
-    print('player loaded')
+    print('Bob loaded')
     

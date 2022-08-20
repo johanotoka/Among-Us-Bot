@@ -29,7 +29,10 @@ async def reload(ctx, extension):
 
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
-        bot.load_extension(f'cogs.{filename[:-3]}')
+        if filename == 'player.py':
+            continue
+        else:
+            bot.load_extension(f'cogs.{filename[:-3]}')
    
 
 bot.run(os.getenv('DISCORD_BOT_TOKEN'))

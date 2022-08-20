@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+from player import *
 
 CREW_CHANNEL = 'crewmate'
 CREW_MATE_ID = 994696028085297212
@@ -157,4 +158,4 @@ class Game(commands.Cog):
 
 def setup(bot):
     bot.add_cog(Game(bot))
-    print('Init loaded')
+    print('Game loaded')
