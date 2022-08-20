@@ -56,7 +56,7 @@ class Game(commands.Cog):
         # TODO: Move these into a generalized helper method
         imposter_role = ctx.guild.get_role(IMPOSTER_ID)
         crewmate_role = ctx.guild.get_role(CREW_MATE_ID)
-        
+
         mc = discord.utils.get(ctx.guild.channels, name=MEETING_CHANNEL)
         if mc:
             for member in mc.members:
@@ -67,11 +67,11 @@ class Game(commands.Cog):
         await self.delete_channel(ctx, IMPOSTER_CHANNEL)
         await self.delete_channel(ctx, LOBBY_CHANNEL)
 
-        #remove all imposter roles from the imposter member list.
+        # remove all imposter roles from the imposter member list.
         for imposter in imposter_members_list:
             await imposter.remove_roles(imposter_role)
-        
-        #remove all crewmate roles from the crewmate member list.
+
+        # remove all crewmate roles from the crewmate member list.
         for crewmate in crewmate_members_list:
             await crewmate.remove_roles(crewmate_role)
 
@@ -102,43 +102,44 @@ class Game(commands.Cog):
         total_players: int = 0
         num_crewmates: int = 0
 
-        #populating list of all members.
+        # populating list of all members.
         for member in meet_ch.members:
             all_members_list.append(member)
             total_players = total_players + 1
 
-        #if the number of imposters specified is greater than total number of players then the bot will complain.
-        if(number_of_imposters > total_players):
-            await ctx.send(f'There are {total_players} total number of players and {number_of_imposters} number of imposters. Am I a joke to you ?')
+        # if the number of imposters specified is greater than total number of players then the bot will complain.
+        if (number_of_imposters > total_players):
+            await ctx.send(
+                f'There are {total_players} total number of players and {number_of_imposters} number of imposters. Am I a joke to you ?')
 
-        elif(number_of_imposters <= total_players):
-            #the "all_members_list" now contains a sequence of non-repeating pseudorandom members.
+        elif (number_of_imposters <= total_players):
+            # the "all_members_list" now contains a sequence of non-repeating pseudorandom members.
             random.shuffle(all_members_list)
 
-            #assigning the imposter roles. "all_members_list" is reduced by the number of imposters. 
+            # assigning the imposter roles. "all_members_list" is reduced by the number of imposters.
             for i in range(number_of_imposters):
                 popped_member = all_members_list.pop(0)
                 await popped_member.add_roles(imposter_role, atomic=True)
                 imposter_members_list.append(popped_member)
                 print(f'{popped_member} member is an imposter.')
 
-            #assigning the crewmate roles. "all_members_list" is reduced by the number of crewmates. 
+            # assigning the crewmate roles. "all_members_list" is reduced by the number of crewmates.
             # Note that if there are 0 imposters, everyone will be a crewmate. Also, if everyone was an imposter there will be 0 crewmates.
             num_crewmates = total_players - number_of_imposters
             for i in range(num_crewmates):
                 popped_member = all_members_list.pop(0)
-                await popped_member.add_roles(crewmate_role, atomic=True) 
+                await popped_member.add_roles(crewmate_role, atomic=True)
                 crewmate_members_list.append(popped_member)
                 print(f'{popped_member} member is a crewmate.')
-            
+
             print(f'------\n')
 
-            #make the bot send the number of imposters to the chat.
-            if(number_of_imposters == 1):
+            # make the bot send the number of imposters to the chat.
+            if (number_of_imposters == 1):
                 await ctx.send(f'Game has started. There is {number_of_imposters} imposter among us. 😱')
             elif (number_of_imposters > 1):
                 await ctx.send(f'Game has started. There are {number_of_imposters} imposters among us. 😱')
-            elif(number_of_imposters == 0):
+            elif (number_of_imposters == 0):
                 await ctx.send(f'uhh there are {number_of_imposters} imposters among us... We are all safe... I guess.')
 
     @commands.command()
@@ -162,7 +163,7 @@ class Game(commands.Cog):
         print(number_of_short_tasks)
         print(number_of_long_tasks)
 
-    #audio testing commands
+    # audio testing commands
     @commands.command()
     async def play_kill(self, ctx):
         await self.play_sound(ctx, "audio/among_us_kill.mp3")
@@ -175,7 +176,7 @@ class Game(commands.Cog):
     async def play_meeting(self, ctx):
         await self.play_sound(ctx, "audio/among_us_meeting.mp3")
 
-    #used to call the sound we want to play    
+    # used to call the sound we want to play
     async def play_sound(self, ctx, sound):
         vc = ctx.guild.voice_client
         if vc:
@@ -183,7 +184,6 @@ class Game(commands.Cog):
             vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source=sound))
         else:
             await ctx.send("Not in a voice channel. Initialize a game first!")
-
 
 
 def setup(bot):
