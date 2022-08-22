@@ -33,7 +33,7 @@ def get_task():
     return(set(tasks),set(task_no))
     
 
-pp,cc=get_task()
+# pp,cc=get_task()
 # print(dict(zip(pp,cc)))
 
 """

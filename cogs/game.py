@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+import example_code.json_test
 from player import *
 
 CREW_CHANNEL = 'crewmate'
@@ -16,6 +17,7 @@ SHORT_TASK_VALUE = 3
 LONG_TASK_VALUE = 10
 
 players = []
+player_dict={}
 imposter_members_list = []
 crewmate_members_list = []
 
@@ -92,6 +94,11 @@ class Game(commands.Cog):
             if (not member.bot):
                 await member.edit(mute=True)
                 players.append(member.id)
+                player_no = member.id
+                tasks_list,task_no=example_code.json_test.get_task()
+                player_dict[player_no]=[[tasks_list],[task_no]]
+
+                
 
         await self.play_sound(ctx, "audio/among_us_start.mp3")
 
@@ -158,6 +165,7 @@ class Game(commands.Cog):
     @commands.command()
     async def print(self, ctx):
         print(players)
+        print(player_dict)
         print(number_of_imposters)
         print(number_of_common_tasks)
         print(number_of_short_tasks)
