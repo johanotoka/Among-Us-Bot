@@ -1,0 +1,38 @@
+{
+    "Short Task": {
+        "tasks": {
+            "1": "Log Building Access",
+            "2": "Swipe card",
+            "3": "Calibrate Sensors",
+            "4": "Estimate Values",
+            "5": "Realign Artefacts", 
+            "6": "Ball Toss",
+            "7": "Deliver Parcel"
+        }
+    },
+    "Medium Task": {
+        "tasks": {
+            "8": "Jenga",
+            "9": "Unlock Manifolds (Simon Says)",
+            "10": "Assemble Artefacts",
+            "11": "Sort Samples",
+            "12": "Align telescope",
+            "13": "Record Temperatures",
+            "14": "Monitor Plant",
+            "15": "Transcribe Recording",
+            "16": "Bowling",
+            "17": "Repeat the Melody"
+        }
+    },
+    "Long Task": {
+        "tasks": {
+            "18": "Cup Stack",
+            "19": "Fix Wiring (crewmates given different locations)",
+            "20": "Fishing",
+            "21": "Submit Scan",
+            "22": "Upload Data",
+            "23": "Insert Keys",
+            "24": "Research Information"
+        }
+    }
+}
