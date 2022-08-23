@@ -1,8 +1,10 @@
+
+from unicodedata import name
 import discord
 from discord.ext import commands
 import random
 import example_code.json_test
-from player import *
+
 
 CREW_CHANNEL = 'crewmate'
 CREW_MATE_ID = 994696028085297212
@@ -17,7 +19,9 @@ SHORT_TASK_VALUE = 3
 LONG_TASK_VALUE = 10
 
 players = []
+nicknames={}
 player_dict={}
+task_dict=example_code.json_test.get_task_dict()
 imposter_members_list = []
 crewmate_members_list = []
 
@@ -39,6 +43,7 @@ class Game(commands.Cog):
     @commands.has_role('MOD')
     async def game_init(self, ctx):
         started = True
+        
         crewmate_channel = await ctx.guild.create_text_channel(CREW_CHANNEL)
 
         imposter_role = discord.utils.get(ctx.guild.roles, id=IMPOSTER_ID)
@@ -52,6 +57,7 @@ class Game(commands.Cog):
 
         voice_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL, user_limit=21)
         await voice_channel.connect()
+        
 
     @commands.command()
     async def game_cleanup(self, ctx):
@@ -79,6 +85,8 @@ class Game(commands.Cog):
 
         started = False
         players.clear()
+        player_dict={}
+        nicknames={}
 
     async def delete_channel(self, ctx, channel):
         ch = discord.utils.get(ctx.guild.channels, name=channel)
@@ -90,13 +98,22 @@ class Game(commands.Cog):
         # Rename the lobby to meeting, and mute all players
         meet_ch = discord.utils.get(ctx.guild.channels, name=LOBBY_CHANNEL)
         await meet_ch.edit(name=MEETING_CHANNEL)
+        
         for member in meet_ch.members:
             if (not member.bot):
-                await member.edit(mute=True)
                 players.append(member.id)
-                player_no = member.id
+                player_name = f"P{len(players)}"
+
+                # Updating the nickname and muting player
+                await member.edit(mute=True,nick=player_name)
+
+                # Making dictionary which is storing player id as key and *nickname as value* 
+                nicknames[member.id]=player_name  
+            
                 tasks_list,task_no=example_code.json_test.get_task()
-                player_dict[player_no]=[[tasks_list],[task_no]]
+                #  Creating a new dict with task code to its name
+                            
+                player_dict[player_name]=[list(tasks_list),[]]
 
                 
 
@@ -157,6 +174,7 @@ class Game(commands.Cog):
         globals()['number_of_short_tasks'] = num_of_s_tasks
         globals()['number_of_long_tasks'] = num_of_l_tasks
 
+
     @commands.command()
     async def lmin(self, ctx):
         if (ctx.channel.name == CREW_CHANNEL):
@@ -166,10 +184,13 @@ class Game(commands.Cog):
     async def print(self, ctx):
         print(players)
         print(player_dict)
-        print(number_of_imposters)
-        print(number_of_common_tasks)
-        print(number_of_short_tasks)
-        print(number_of_long_tasks)
+        print(task_dict)
+        for i in player_dict.keys():
+            await ctx.send(f"Player: {i} \nTasks to Be done:\n{player_dict[i][0]}\n Tasks Completed:\n{player_dict[i][1]}")
+        # print(number_of_imposters)
+        # print(number_of_common_tasks)
+        # print(number_of_short_tasks)
+        # print(number_of_long_tasks)
 
     # audio testing commands
     @commands.command()
@@ -193,6 +214,37 @@ class Game(commands.Cog):
         else:
             await ctx.send("Not in a voice channel. Initialize a game first!")
 
+    @commands.has_any_role('MOD')
+    @commands.command()
+    async def td(self,ctx, player, task):
+        if ctx.message.channel.name == "report-task-done":
+            if(player in player_dict.keys()):
+                # print("player is present",player)
+                if(task in task_dict.keys()):
+                    x=task_dict[task]
+                    player_dict[player][0].remove(x)
+                    player_dict[player][1].append(x)
+        else:
+            ctx.send("Please send the message to right channel period")        
+
+    @commands.command()
+    async def mytask(self,ctx):
+        meet_ch = discord.utils.get(ctx.guild.channels,name=CREW_CHANNEL)  
+        id=ctx.message.author.id
+        nameofchannel = ctx.message.channel.name
+        x=0
+        if nameofchannel=='crewmate':
+            for i in nicknames.keys():
+                print(i,id)
+                if i==id :
+                    temp = nicknames[id]
+                    x=1
+                    await ctx.send(f"Your Current Tasks are:\n {player_dict[temp][0]}\nYou Have completed:\n{player_dict[temp][1]}")
+            if x==0:
+                await ctx.send("Are you sure you are playing?")
+        else:
+                await ctx.send("Be Smart, you are in the Wrong Channel")
+            
 
 def setup(bot):
     bot.add_cog(Game(bot))
