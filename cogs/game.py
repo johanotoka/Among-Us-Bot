@@ -98,7 +98,15 @@ class Game(commands.Cog):
         # Rename the lobby to meeting, and mute all players
         meet_ch = discord.utils.get(ctx.guild.channels, name=LOBBY_CHANNEL)
         await meet_ch.edit(name=MEETING_CHANNEL)
-        
+        await self.play_sound(ctx, "audio/among_us_start.mp3")
+
+        # Assigned roles to each player
+        imposter_role = ctx.guild.get_role(IMPOSTER_ID)
+        crewmate_role = ctx.guild.get_role(CREW_MATE_ID)
+        all_members_list = []
+        total_players: int = 0
+        num_crewmates: int = 0
+
         for member in meet_ch.members:
             if (not member.bot):
                 players.append(member.id)
@@ -115,22 +123,9 @@ class Game(commands.Cog):
                             
                 player_dict[player_name]=[list(tasks_list),[]]
 
+                all_members_list.append(member)
+                total_players = total_players + 1
                 
-
-        await self.play_sound(ctx, "audio/among_us_start.mp3")
-
-        # Assigned roles to each player
-        imposter_role = ctx.guild.get_role(IMPOSTER_ID)
-        crewmate_role = ctx.guild.get_role(CREW_MATE_ID)
-        all_members_list = []
-        total_players: int = 0
-        num_crewmates: int = 0
-
-        # populating list of all members.
-        for member in meet_ch.members:
-            all_members_list.append(member)
-            total_players = total_players + 1
-
         # if the number of imposters specified is greater than total number of players then the bot will complain.
         if (number_of_imposters > total_players):
             await ctx.send(
@@ -224,8 +219,9 @@ class Game(commands.Cog):
                     x=task_dict[task]
                     player_dict[player][0].remove(x)
                     player_dict[player][1].append(x)
+                await ctx.send(player +" has completed " + x)
         else:
-            ctx.send("Please send the message to right channel period")        
+            await ctx.send("Please send the message to right channel period")        
 
     @commands.command()
     async def mytask(self,ctx):

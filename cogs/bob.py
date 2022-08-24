@@ -35,17 +35,20 @@ class Bob(commands.Cog):
         print("pp")
         if( globals()['count'] <2): # [player.get(ctx.member)].em==0
             try:
-                await ctx.reply(f'{ctx.member.display_name} called an Emergency Meeting, Head over to Cafe')
-            #TODO Call Audio bot for playing the sound
+                await ctx.reply(f'An Emergency Meeting was called, Head over to Cafe')
+                vc = ctx.guild.voice_client
+                if vc:
+                    vc.stop()
+                    vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_em.mp3"))
+                else:
+                    await ctx.send("Not in a voice channel. Initialize a game first!")
             except:
                 print("eerrorororo")
             globals()['count']+=1
 
         else:
-            await ctx.reply(content=f"{ctx.member.display_name}, How many times you wanna press eh? ", flags=MessageFlags().EPHEMERAL)    
+            await ctx.reply(content=f"{ctx.member.nick}, How many times you wanna press eh? ", flags=MessageFlags().EPHEMERAL)    
         #TODO Set Clickable for only 2 times
-
-
 
 
     @commands.command()
