@@ -20,7 +20,7 @@ def get_task():
     task_no=set()
     
 
-    
+    #Todo: We want 4 short tasks, 1 medium and 1 long
     for i in range(3):  
         x=random.randint(1,7)
         y= random.randint(8,17)
@@ -29,7 +29,12 @@ def get_task():
     
     for i in task_no:
         tasks.append(data["tasks"][f"{i}"])
-       
+
+    #Two common tasks   
+    tasks.append(data["tasks"]["100"])
+    tasks.append(data["tasks"]["101"])
+    task_no.update(100,101)
+
     # print("task log ", set(task_no))
     # print(set(tasks))
     print("tasks = ", tasks, "\n ",task_no)

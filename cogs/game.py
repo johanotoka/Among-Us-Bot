@@ -92,7 +92,7 @@ class Game(commands.Cog):
         for crewmate in crewmate_members_list:
             await crewmate.remove_roles(crewmate_role)
 
-        started = False
+        globals()['started'] = False
         players.clear()
         player_dict={}
         nicknames={}
@@ -154,6 +154,7 @@ class Game(commands.Cog):
             # assigning the crewmate roles. "all_members_list" is reduced by the number of crewmates.
             # Note that if there are 0 imposters, everyone will be a crewmate. Also, if everyone was an imposter there will be 0 crewmates.
             num_crewmates = total_players - number_of_imposters
+            globals()['max_progress_value'] = num_crewmates*100
             for i in range(num_crewmates):
                 popped_member = all_members_list.pop(0)
                 await popped_member.add_roles(crewmate_role, atomic=True)
@@ -228,7 +229,19 @@ class Game(commands.Cog):
                     x=task_dict[task]
                     player_dict[player][0].remove(x)
                     player_dict[player][1].append(x)
-                await ctx.send(player +" has completed " + x)
+                    if (task == 100 or task == 101):
+                        globals()['progression'] += 5
+                    elif (1 <= task <= 8):
+                        globals()['progression'] += 10
+                    elif (9 <= task <=13):
+                        globals()['progression'] += 20
+                    else:
+                        globals()['progression'] += 30
+                    
+                    await ctx.send(player +" has completed " + x)
+                    self.update_progression()
+                    if (progression >= max_progress_value):
+                        await self.crew_win_game()
         else:
             await ctx.send("Please send the message to right channel period")        
 
@@ -251,7 +264,7 @@ class Game(commands.Cog):
                 await ctx.send("Be Smart, you are in the Wrong Channel")
 
 
-    async def update_progression(self):
+    def update_progression(self):
         progress_bar_value = (progression / max_progress_value) * 100
         greens = math.floor(progress_bar_value / 10)
         bar = []
@@ -262,6 +275,10 @@ class Game(commands.Cog):
         bar_str = '{} {:4.2f}%'.format(''.join(bar), progress_bar_value)
         globals()['progress_bar'] = bar_str
             
+    async def crew_win_game(self):
+        meet_ch = discord.utils.get(ctx.guild.channels, name=MEETING_CHANNEL)
+        await meet_ch.send("Crew Mates have completed all their tasks and won the game!")
+        globals()['started'] = False
 
 def setup(bot):
     bot.add_cog(Game(bot))

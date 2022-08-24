@@ -1,6 +1,8 @@
 {
     
         "tasks": {
+            "100": "Sign In on Google Form",
+            "101": "Crew Portrait",
             "1": "Log Building Access",
             "2": "Swipe card",
             "3": "Calibrate Sensors",
