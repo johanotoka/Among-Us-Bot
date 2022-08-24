@@ -1,3 +1,4 @@
+import math
 
 from unicodedata import name
 import discord
@@ -32,6 +33,14 @@ number_of_common_tasks: int
 number_of_short_tasks: int
 number_of_long_tasks: int
 max_progress_value: int
+
+PROGRESS_BAR_MAX = 10
+GREEN_BOX = '🟩'
+RED_BOX = '🟥'
+
+max_progress_value = 0
+progression = 0
+progress_bar = '🟥🟥🟥🟥🟥🟥🟥🟥🟥🟥 0%'
 
 
 class Game(commands.Cog):
@@ -240,6 +249,18 @@ class Game(commands.Cog):
                 await ctx.send("Are you sure you are playing?")
         else:
                 await ctx.send("Be Smart, you are in the Wrong Channel")
+
+
+    async def update_progression(self):
+        progress_bar_value = (progression / max_progress_value) * 100
+        greens = math.floor(progress_bar_value / 10)
+        bar = []
+
+        for i in range(PROGRESS_BAR_MAX):
+            bar.append(GREEN_BOX) if i in range(greens) else bar.append(RED_BOX)
+
+        bar_str = '{} {:4.2f}%'.format(''.join(bar), progress_bar_value)
+        globals()['progress_bar'] = bar_str
             
 
 def setup(bot):
