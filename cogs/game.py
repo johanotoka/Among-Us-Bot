@@ -230,7 +230,7 @@ class Game(commands.Cog):
                     player_dict[player][0].remove(x)
                     player_dict[player][1].append(x)
                     if (task == 16 or task == 17):
-                        globals()['progression'] += 5
+                        globals()['progression'] += 5 
                     elif (1 <= task <= 8):
                         globals()['progression'] += 10
                     elif (9 <= task <=13):
