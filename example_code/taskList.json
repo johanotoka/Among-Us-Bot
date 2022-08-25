@@ -1,5 +1,5 @@
 {
-    "Short Task": {
+    
         "tasks": {
             "1": "Log Building Access",
             "2": "Swipe card",
@@ -7,11 +7,9 @@
             "4": "Estimate Values",
             "5": "Realign Artefacts", 
             "6": "Ball Toss",
-            "7": "Deliver Parcel"
-        }
-    },
-    "Medium Task": {
-        "tasks": {
+            "7": "Deliver Parcel",
+    
+
             "8": "Jenga",
             "9": "Unlock Manifolds (Simon Says)",
             "10": "Assemble Artefacts",
@@ -21,11 +19,9 @@
             "14": "Monitor Plant",
             "15": "Transcribe Recording",
             "16": "Bowling",
-            "17": "Repeat the Melody"
-        }
-    },
-    "Long Task": {
-        "tasks": {
+            "17": "Repeat the Melody",
+
+
             "18": "Cup Stack",
             "19": "Fix Wiring (crewmates given different locations)",
             "20": "Fishing",
@@ -34,5 +30,5 @@
             "23": "Insert Keys",
             "24": "Research Information"
         }
-    }
 }
+

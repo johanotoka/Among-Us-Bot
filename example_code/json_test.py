@@ -1,3 +1,4 @@
+from itertools import count
 import json
 import random
 
@@ -16,7 +17,7 @@ data = json.load(file)
 
 def get_task():
     tasks=[]
-    task_no=[]
+    task_no=set()
     
 
     
@@ -24,18 +25,26 @@ def get_task():
         x=random.randint(1,7)
         y= random.randint(8,17)
         z=random.randint(18,24)
-        task_no.extend([x,y,z])
-        tasks.append(data["Short Task"]["tasks"][f"{x}"])
-        tasks.append(data["Medium Task"]["tasks"][f"{y}"])
-        tasks.append(data["Long Task"]["tasks"][f"{z}"])
+        task_no.update([x,y,z])
+    
+    for i in task_no:
+        tasks.append(data["tasks"][f"{i}"])
+       
     # print("task log ", set(task_no))
     # print(set(tasks))
-    return(set(tasks),set(task_no))
-    
+    print("tasks = ", tasks, "\n ",task_no)
+    return(tasks,task_no)
+
+
+def get_task_dict():
+    return data['tasks']     
 
 # pp,cc=get_task()
+# get_task_dict()
 # print(dict(zip(pp,cc)))
 
+
+print(get_task_dict())
 """
 
 Player - 
