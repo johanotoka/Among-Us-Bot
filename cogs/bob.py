@@ -16,6 +16,7 @@ class Bob(commands.Cog):
 
     @commands.command()
     async def em(self,ctx):
+        await ctx.message.delete()
         print("entered in hell")
         count=0
         await buttons.send(
@@ -32,6 +33,7 @@ class Bob(commands.Cog):
 
     @buttons.click
     async def emm(ctx):
+        await ctx.message.delete()
         print("pp")
         if( globals()['count'] <2): # [player.get(ctx.member)].em==0
             try:
@@ -41,7 +43,7 @@ class Bob(commands.Cog):
                     vc.stop()
                     vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_em.mp3"))
                 else:
-                    await ctx.send("Not in a voice channel. Initialize a game first!")
+                    await ctx.reply("Not in a voice channel. Initialize a game first!")
             except:
                 print("eerrorororo")
             globals()['count']+=1

@@ -35,6 +35,8 @@ class Sabotage(commands.Cog):
     # @commands.cooldown(rate, per,t)
     @commands.command()
     async def sab(self,ctx): #!hi
+        await ctx.message.delete()
+  
         globals()['clicked'] = False
         await buttons.send(
         content= "Hey There",
@@ -72,6 +74,12 @@ class Sabotage(commands.Cog):
         t=float(d.now().strftime('%H.%M'))
         if (globals()['clicked']==False or t-globals()['ptime']>timer):
             # TODO Call bot for playing the SOUND
+                vc = ctx.guild.voice_client
+                if vc:
+                    vc.stop()
+                    vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_sab.mp3"))
+                else:
+                    await ctx.reply("Not in a voice channel. Initialize a game first!")
                 globals()['clicked']=True 
                 globals()['ptime']=t
                 await ctx.reply(f'Who closed the lights :eyes:')
@@ -85,6 +93,12 @@ class Sabotage(commands.Cog):
         t=float(d.now().strftime('%H.%M'))
         if (globals()['clicked']==False or t-globals()['ptime']>timer):
                 # TODO Call bot for playing the SOUND
+                vc = ctx.guild.voice_client
+                if vc:
+                    vc.stop()
+                    vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_sab.mp3"))
+                else:
+                    await ctx.reply("Not in a voice channel. Initialize a game first!")
                 globals()['clicked']=True
                 globals()['ptime']=t
                 await ctx.reply(f'Wait is it me or are we losing oxygen :face_with_spiral_eyes:')
@@ -96,6 +110,12 @@ class Sabotage(commands.Cog):
         t=float(d.now().strftime('%H.%M'))
         if (globals()['clicked']==False or t-globals()['ptime']>timer):
                 # TODO Call bot for playing the SOUND
+                vc = ctx.guild.voice_client
+                if vc:
+                    vc.stop()
+                    vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_sab.mp3"))
+                else:
+                    await ctx.reply("Not in a voice channel. Initialize a game first!")
                 globals()['clicked']=True 
                 globals()['ptime']=t
                 await ctx.reply(f'People gotta not mess with the reactor :fire:')
@@ -107,6 +127,12 @@ class Sabotage(commands.Cog):
         t=float(d.now().strftime('%H.%M'))
         if (globals()['clicked']==False or t-globals()['ptime']>timer):
             # TODO Call bot for playing the SOUND
+            vc = ctx.guild.voice_client
+            if vc:
+                    vc.stop()
+                    vc.play(discord.FFmpegPCMAudio(executable="audio/ffmpeg.exe", source="audio/among_us_sab.mp3"))
+            else:
+                    await ctx.reply("Not in a voice channel. Initialize a game first!")
             globals()['clicked']=True 
             globals()['ptime']= t
             await ctx.reply(f'Everyone doors are closed, Dance and it might open :joy:')

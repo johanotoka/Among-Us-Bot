@@ -12,7 +12,7 @@ class Basics(commands.Cog):
         print(self.bot.user.name)
         print(self.bot.user.id)
         print('------')
-
+    
     @commands.command()
     async def ping(self, ctx):
         await ctx.send(f'Pong! {round(self.bot.latency * 1000)}ms')

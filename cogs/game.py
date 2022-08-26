@@ -5,6 +5,10 @@ import discord
 from discord.ext import commands
 import random
 import example_code.json_test
+from discord_buttons_plugin import *
+from main import bot
+
+buttons=ButtonsClient(bot)
 
 
 CREW_CHANNEL = 'crewmate'
@@ -83,7 +87,7 @@ class Game(commands.Cog):
         crewmate_overwrites = {
             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
             imposter_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-            dead_player_role: discord.PermissionOverwrite(read_messages=True, send_messages=False),
+            dead_player_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
         }
         crewmate_channel = await ctx.guild.create_text_channel(CREW_CHANNEL, overwrites=crewmate_overwrites)
 
@@ -104,8 +108,16 @@ class Game(commands.Cog):
         voice_channel = await ctx.guild.create_voice_channel(LOBBY_CHANNEL, user_limit=21, overwrites=lobby_overwrites)
 
         await voice_channel.connect()
-        
 
+
+    # @commands.Cog.listener()
+    # async def on_message(self,message):
+    #     print(message.channel,CREW_CHANNEL)
+    #     if (message.channel == 'crewmate'):
+    #         print("yo")
+    #         await message.delete()
+    #     print("oh no")
+        
     @commands.command()
     async def game_cleanup(self, ctx):
         # TODO: Move these into a generalized helper method
@@ -316,11 +328,27 @@ class Game(commands.Cog):
                         globals()['started'] = False
         else:
             await ctx.send("Please send the message to right channel period")        
-
+    
+    @commands.has_any_role('MOD')
     @commands.command()
-    async def mytask(self,ctx):
+    async def tasks(self,ctx):
+        await ctx.message.delete()
+        count=0
+        await buttons.send(
+            content="Get My Tasks",
+            channel= ctx.channel.id,
+            components=[ActionRow([Button(style = ButtonType().Secondary,
+            label ="Click to get your task",
+            custom_id="mytask"
+                                    )],
+                            )
+                ]
+        )
+
+    @buttons.click
+    async def mytask(ctx):
         meet_ch = discord.utils.get(ctx.guild.channels,name=CREW_CHANNEL)  
-        id=ctx.message.author.id
+        id=ctx.member.id
         nameofchannel = ctx.message.channel.name
         x=0
         if nameofchannel=='crewmate':
@@ -329,11 +357,12 @@ class Game(commands.Cog):
                 if i==id :
                     temp = nicknames[id]
                     x=1
-                    await ctx.send(f"Your Current Tasks are:\n {player_dict[temp][0]}\nYou Have completed:\n{player_dict[temp][1]}")
+                    await ctx.reply(f"Your Current Tasks are:\n {player_dict[temp][0]}\nYou Have completed:\n{player_dict[temp][1]}",flags=MessageFlags().EPHEMERAL)
             if x==0:
-                await ctx.send("Are you sure you are playing?")
+                await ctx.reply("Are you sure you are playing?",flags=MessageFlags().EPHEMERAL)
         else:
-                await ctx.send("Be Smart, you are in the Wrong Channel")
+                await ctx.reply("Be Smart, you are in the Wrong Channel")
+   
 
 
     def update_progression(self):
@@ -349,6 +378,7 @@ class Game(commands.Cog):
 
     @commands.command()
     async def dead(self, ctx):
+        await ctx.message.delete() 
         player = ctx.author
         await self.make_dead(ctx, player)
 
