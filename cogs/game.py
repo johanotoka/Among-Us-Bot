@@ -37,6 +37,7 @@ started = False
 number_of_imposters: int
 number_of_common_tasks: int
 number_of_short_tasks: int
+number_of_medium_tasks: int
 number_of_long_tasks: int
 max_progress_value: int
 
@@ -228,11 +229,13 @@ class Game(commands.Cog):
 
     @commands.command()
     @commands.has_role('MOD')
-    async def game_setting(self, ctx, num_of_imp=4, num_of_com_tasks=2, num_of_s_tasks=5, num_of_l_tasks=3):
+    #async def game_setting(self, ctx, num_of_imp=4, num_of_com_tasks=2, num_of_s_tasks=4, num_of_m_tasks=1, num_of_l_tasks=1):
+    async def game_setting(self, ctx, num_of_imp=4):
         globals()['number_of_imposters'] = num_of_imp
-        globals()['number_of_common_tasks'] = num_of_com_tasks
-        globals()['number_of_short_tasks'] = num_of_s_tasks
-        globals()['number_of_long_tasks'] = num_of_l_tasks
+        globals()['number_of_common_tasks'] = 2
+        globals()['number_of_short_tasks'] = 4
+        globals()['number_of_long_tasks'] = 1
+        globals()['number_of_medium_tasks'] = 1
 
 
     @commands.command()
@@ -255,6 +258,8 @@ class Game(commands.Cog):
         print(crewmate_members_list)
         print(dead_crewmates_list)
         print(dead_imposters_list)
+        print("Max Progress: "+str(max_progress_value))
+        print("Current Progress: "+str(progression))
 
     # audio testing commands
     @commands.command()
@@ -288,19 +293,27 @@ class Game(commands.Cog):
                     x=task_dict[task]
                     player_dict[player][0].remove(x)
                     player_dict[player][1].append(x)
-                    if (task == 16 or task == 17):
-                        globals()['progression'] += 5 
-                    elif (1 <= task <= 8):
+                    if (int(task) == 16 or int(task) == 17):
+                        globals()['progression'] += 5
+                        print('common task done') 
+                    elif (1 <= int(task) <= 8):
                         globals()['progression'] += 10
-                    elif (9 <= task <=13):
+                        print('short task done')
+                    elif (9 <= int(task) <=13):
                         globals()['progression'] += 20
+                        print('medium task done')
                     else:
                         globals()['progression'] += 30
+                        print('long task done')
                     
                     await ctx.send(player +" has completed " + x)
                     self.update_progression()
                     if (progression >= max_progress_value):
-                        await self.crew_win_game()
+                        print("crewmates won by tasks")
+                        #await self.crew_win_game(ctx)
+                        meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+                        await meet_ch.send("Crew Mates have completed all their tasks and won the game!")
+                        globals()['started'] = False
         else:
             await ctx.send("Please send the message to right channel period")        
 
@@ -333,11 +346,19 @@ class Game(commands.Cog):
 
         bar_str = '{} {:4.2f}%'.format(''.join(bar), progress_bar_value)
         globals()['progress_bar'] = bar_str
-            
+
+    @commands.command()
+    async def dead(self, ctx):
+        player = ctx.author
+        await self.make_dead(ctx, player)
+
     @commands.command()
     @commands.has_role('MOD')
     async def kill_player(self, ctx, member: discord.Member):
+        await self.make_dead(ctx, member)
 
+    #Generalized method to mark a player as dead
+    async def make_dead(self, ctx, member):
         #give the dead player role to the member that was just killed by this command.
         dead_player_role = ctx.guild.get_role(DEAD_PLAYER_ID)
         await member.add_roles(dead_player_role, atomic=True)
@@ -464,7 +485,7 @@ class Game(commands.Cog):
         
         return temp_name
 
-    async def crew_win_game(self):
+    async def crew_win_game(ctx, self):
         meet_ch = discord.utils.get(ctx.guild.channels, name=MEETING_CHANNEL)
         await meet_ch.send("Crew Mates have completed all their tasks and won the game!")
         globals()['started'] = False
