@@ -20,16 +20,28 @@ def get_task():
     task_no=set()
     
 
-    
-    for i in range(3):  
+    #We want 4 short tasks, 1 medium and 1 long
+    while (len(task_no) < 4):
         x=random.randint(1,7)
-        y= random.randint(8,17)
-        z=random.randint(18,24)
-        task_no.update([x,y,z])
+        if (x not in task_no):
+            task_no.update([x])
     
+    #for i in range(4):  
+    #    x=random.randint(1,7)
+    #    task_no.update([x])
+    
+    y= random.randint(8,11)
+    z=random.randint(12,15)
+    task_no.update([y,z])
+
     for i in task_no:
         tasks.append(data["tasks"][f"{i}"])
-       
+
+    #Two common tasks   
+    tasks.append(data["tasks"]["16"])
+    tasks.append(data["tasks"]["17"])
+    task_no.update([16,17])
+
     # print("task log ", set(task_no))
     # print(set(tasks))
     print("tasks = ", tasks, "\n ",task_no)
