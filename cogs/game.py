@@ -308,10 +308,10 @@ class Game(commands.Cog):
                     if (int(task) == 16 or int(task) == 17):
                         globals()['progression'] += 5
                         print('common task done') 
-                    elif (1 <= int(task) <= 8):
+                    elif (1 <= int(task) <= 7):
                         globals()['progression'] += 10
                         print('short task done')
-                    elif (9 <= int(task) <=13):
+                    elif (8 <= int(task) <=11):
                         globals()['progression'] += 20
                         print('medium task done')
                     else:
@@ -319,7 +319,7 @@ class Game(commands.Cog):
                         print('long task done')
                     
                     await ctx.send(player +" has completed " + x)
-                    self.update_progression()
+                    await self.update_progression(ctx)
                     if (progression >= max_progress_value):
                         print("crewmates won by tasks")
                         #await self.crew_win_game(ctx)
@@ -365,7 +365,7 @@ class Game(commands.Cog):
    
 
 
-    def update_progression(self):
+    async def update_progression(self, ctx):
         progress_bar_value = (progression / max_progress_value) * 100
         greens = math.floor(progress_bar_value / 10)
         bar = []
@@ -374,7 +374,11 @@ class Game(commands.Cog):
             bar.append(GREEN_BOX) if i in range(greens) else bar.append(RED_BOX)
 
         bar_str = '{} {:4.2f}%'.format(''.join(bar), progress_bar_value)
-        globals()['progress_bar'] = bar_str
+        if (bar_str != progress_bar):
+            globals()['progress_bar'] = bar_str
+            meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+            await meet_ch.send(progress_bar)
+
 
     @commands.command()
     async def dead(self, ctx):
