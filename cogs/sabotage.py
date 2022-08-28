@@ -5,6 +5,7 @@ from datetime import datetime as d
 from discord_buttons_plugin import *
 from discord.ext.commands.cooldowns import BucketType
 
+CREW_CHANNEL = 'crewmate'
 
 buttons=ButtonsClient(main.bot)
 # imposters=Game.get_imporsters()
@@ -83,6 +84,8 @@ class Sabotage(commands.Cog):
                 globals()['clicked']=True 
                 globals()['ptime']=t
                 await ctx.reply(f'Who closed the lights :eyes:')
+                meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+                await meet_ch.send("Electrical sabotage is ongoing. Tasks can not be completed until power is restored!")
         else:
                 print(t, globals()['ptime'])
                 await ctx.reply(f"Take a deep breadth you are on cooldown {(timer-(t-globals()['ptime']))*60}min left",flags=MessageFlags().EPHEMERAL)
@@ -102,6 +105,8 @@ class Sabotage(commands.Cog):
                 globals()['clicked']=True
                 globals()['ptime']=t
                 await ctx.reply(f'Wait is it me or are we losing oxygen :face_with_spiral_eyes:')
+                meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+                await meet_ch.send("Oxygen Sabotage is ongoing. Restore oxygen within 45 seconds to avoid dying!")
         else:
                 await ctx.reply(f"Take a deep breadth you are on cooldown {(timer-(t-globals()['ptime']))*60}min left",flags=MessageFlags().EPHEMERAL)
 
@@ -119,6 +124,8 @@ class Sabotage(commands.Cog):
                 globals()['clicked']=True 
                 globals()['ptime']=t
                 await ctx.reply(f'People gotta not mess with the reactor :fire:')
+                meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+                await meet_ch.send("Reactor sabotage is ongoing. Prevent a meltdown within 45 seconds!")
         else:
             await ctx.reply(f"Take a deep breadth you are on cooldown {(timer-(t-globals()['ptime']))*60}min left",flags=MessageFlags().EPHEMERAL)
 
@@ -136,6 +143,8 @@ class Sabotage(commands.Cog):
             globals()['clicked']=True 
             globals()['ptime']= t
             await ctx.reply(f'Everyone doors are closed, Dance and it might open :joy:')
+            meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+            await meet_ch.send("Doors sabotage is ongoing. Doors will reopen after 10 seconds!")
         else:
             await ctx.reply(f"Take a deep breadth you are on cooldown {(timer-(t-globals()['ptime']))*60}min left",flags=MessageFlags().EPHEMERAL)
 

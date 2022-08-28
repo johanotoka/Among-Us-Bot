@@ -9,19 +9,19 @@ load_dotenv()
 bot = commands.Bot(command_prefix='!')
 
 @bot.command()
-@commands.has_role("MOD")
+@commands.has_any_role("MOD", "Game Leader")
 async def load(ctx, extension):
     bot.load_extension(f'cogs.{extension}')
     print(f'{extension} loaded')
 
 @bot.command()
-@commands.has_role("MOD")
+@commands.has_any_role("MOD", "Game Leader")
 async def unload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
     print(f'{extension} unloaded')
 
 @bot.command()
-@commands.has_role("MOD")
+@commands.has_any_role("MOD", "Game Leader")
 async def reload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
     bot.load_extension(f'cogs.{extension}')

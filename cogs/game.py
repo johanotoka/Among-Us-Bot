@@ -60,7 +60,7 @@ class Game(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    @commands.has_role('MOD')
+    @commands.has_any_role('MOD', "Game Leader")
     async def game_init(self, ctx):
         started = True
 
@@ -240,7 +240,7 @@ class Game(commands.Cog):
                 await ctx.send(f'uhh there are {number_of_imposters} imposters among us... We are all safe... I guess.')
 
     @commands.command()
-    @commands.has_role('MOD')
+    @commands.has_any_role('MOD', "Game Leader")
     #async def game_setting(self, ctx, num_of_imp=4, num_of_com_tasks=2, num_of_s_tasks=4, num_of_m_tasks=1, num_of_l_tasks=1):
     async def game_setting(self, ctx, num_of_imp=4):
         globals()['number_of_imposters'] = num_of_imp
@@ -249,6 +249,19 @@ class Game(commands.Cog):
         globals()['number_of_long_tasks'] = 1
         globals()['number_of_medium_tasks'] = 1
 
+    @commands.command()
+    @commands.has_any_role('MOD', "Game Leader")
+    async def sab_over(self, ctx):
+        meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
+        await meet_ch.send("The crisis is over. Normal operation is resumed!")
+        #globals()['started'] = False
+
+    @commands.command()
+    @commands.has_any_role('MOD', "Game Leader")
+    async def sab_succeed(self, ctx):
+        meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)        
+        await meet_ch.send("The sabotage succeeded. Game over!")    
+        #globals()['started'] = False
 
     @commands.command()
     async def lmin(self, ctx):
@@ -295,7 +308,7 @@ class Game(commands.Cog):
         else:
             await ctx.send("Not in a voice channel. Initialize a game first!")
 
-    @commands.has_any_role('MOD')
+    @commands.has_any_role('MOD', "Game Leader")
     @commands.command()
     async def td(self,ctx, player, task):
         if ctx.message.channel.name == "report-task-done":
@@ -329,7 +342,7 @@ class Game(commands.Cog):
         else:
             await ctx.send("Please send the message to right channel period")        
     
-    @commands.has_any_role('MOD')
+    @commands.has_any_role('MOD', "Game Leader")
     @commands.command()
     async def tasks(self,ctx):
         await ctx.message.delete()
@@ -387,7 +400,7 @@ class Game(commands.Cog):
         await self.make_dead(ctx, player)
 
     @commands.command()
-    @commands.has_role('MOD')
+    @commands.has_any_role('MOD', "Game Leader")
     async def kill_player(self, ctx, member: discord.Member):
         await self.make_dead(ctx, member)
 
@@ -520,7 +533,7 @@ class Game(commands.Cog):
         return temp_name
 
     async def crew_win_game(ctx, self):
-        meet_ch = discord.utils.get(ctx.guild.channels, name=MEETING_CHANNEL)
+        meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
         await meet_ch.send("Crew Mates have completed all their tasks and won the game!")
         globals()['started'] = False
 
