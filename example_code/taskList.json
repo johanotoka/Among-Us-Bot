@@ -1,26 +1,18 @@
 {
     
         "tasks": {         
-            "1": "Arrange Balls",
-            "2": "Ball in Hoop",
-            "3": "Cup Stack",
-            "4": "Category Match",
-            "5": "Lucky 6 (Dice Roll)", 
-            "6": "Hole in One",
-            "7": "Parcel Delivery",
+            "1": "Ball in Hoop",
+            "2": "Cup Stack",
+            "3": "Lucky 6 (Dice Roll)", 
+            "4": "Parcel Delivery",
     
-            "8": "Ball Toss",
-            "9": "Bottle Flip",
-            "10": "TikTok Dance",
-            "11": "Wiring",
+            "5": "Bottle Flip",
+            "6": "Pool Table",
 
-            "12": "Music Memory",
-            "13": "Stand Dominoes",
-            "14": "Video Game (Wii)",
-            "15": "Ball Darts",
+            "7": "Stand Dominoes",
+            "8": "Video Game (Wii)",
 
-            "16": "Sign In on Google Form",
-            "17": "Red Light Green Light"
+            "9": "Red Light Green Light" 
         }
 }
 

@@ -87,7 +87,7 @@ class Game(commands.Cog):
         crewmate_overwrites = {
             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
             imposter_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
-            dead_player_role: discord.PermissionOverwrite(read_messages=True, send_messages=True),
+            dead_player_role: discord.PermissionOverwrite(read_messages=True, send_messages=False),
         }
         crewmate_channel = await ctx.guild.create_text_channel(CREW_CHANNEL, overwrites=crewmate_overwrites)
 
@@ -99,7 +99,7 @@ class Game(commands.Cog):
         dead_player_channel = await ctx.guild.create_text_channel(DEAD_CHANNEL, overwrites=dead_overwrites)
 
         #create the dead voice channel.
-        dead_voice_channel = await ctx.guild.create_voice_channel(DEAD_VOICE_CHANNEL, user_limit=21, overwrites=dead_overwrites)
+        dead_voice_channel = await ctx.guild.create_voice_channel(DEAD_VOICE_CHANNEL, user_limit=11, overwrites=dead_overwrites)
 
         #create the lobby channel. Dead players cannot join the lobby.
         lobby_overwrites = {
@@ -251,14 +251,14 @@ class Game(commands.Cog):
 
     @commands.command()
     @commands.has_any_role('MOD', "Game Leader")
-    async def sab_over(self, ctx):
+    async def sab_succeed(self, ctx):
         meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)
         await meet_ch.send("The crisis is over. Normal operation is resumed!")
         #globals()['started'] = False
 
     @commands.command()
     @commands.has_any_role('MOD', "Game Leader")
-    async def sab_succeed(self, ctx):
+    async def sab_fail(self, ctx):
         meet_ch = discord.utils.get(ctx.guild.channels, name=CREW_CHANNEL)        
         await meet_ch.send("The sabotage succeeded. Game over!")    
         #globals()['started'] = False
@@ -516,7 +516,7 @@ class Game(commands.Cog):
     async def printAmongUsArt(self, ctx):
         amongUsBotArt: str = ""
         #print each line of the emoji art of the amongus bot by opening the amongus_art file.
-        with open('amongus_art.txt') as file:
+        with open('amongus_art.txt', encoding="utf8") as file:
             for line in file:
                 amongUsBotArt = amongUsBotArt + line #note each line already appends a newline "\n" character.
         
