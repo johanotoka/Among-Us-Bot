@@ -16,7 +16,7 @@ global clicked
 clicked =False
 global ptime 
 ptime= 24.90
-timer = 0.02
+timer = 0.0075
 
 
 class Sabotage(commands.Cog):
